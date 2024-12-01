@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Prediction System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        form {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .accuracy {
+            background-color: #eafaf1;
+            border-left: 5px solid #27ae60;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Battery Prediction System</h1>
+
+        <!-- Form for Prediction -->
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Input Battery Data</h2>
+            {{ form.as_p }}
+            <button type="submit" name="predict">Predict</button>
+        </form>
+        <p>{{ prediction }}</p>
+
+        <!-- Training Button -->
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Train Model</h2>
+            <button type="submit" name="train">Train Model</button>
+        </form>
+
+        <!-- Display Model Accuracy -->
+        {% if accuracy_data %}
+            <div class="accuracy">
+                <h2>Model Accuracy</h2>
+                <ul>
+                    <li>Random Forest Classification Accuracy: {{ accuracy_data.rf_class_accuracy|floatformat:2 }}%</li>
+                    <li>Random Forest Regression MSE: {{ accuracy_data.rf_reg_mse|floatformat:2 }}</li>
+                    <li>Deep Learning Model Accuracy: {{ accuracy_data.deep_learning_accuracy|floatformat:2 }}%</li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Display Model Graphs -->
+        <h1>Battery Prediction Models</h1>
+
+        <h2>Random Forest Model Accuracy</h2>
+        <img src="{% static 'images/rf_accuracy.png' %}" alt="Random Forest Accuracy">
+
+        <h2>Deep Learning Model Accuracy</h2>
+        <img src="{% static 'images/deep_learning_accuracy.png' %}" alt="Deep Learning Accuracy">
+
+        <h2>LSTM Model Loss</h2>
+        <img src="{% static 'images/lstm_loss.png' %}" alt="LSTM Loss Plot">
+        
+    </div>
+</body>
+</html>
