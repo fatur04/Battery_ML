@@ -64,26 +64,27 @@
 6. Nginx Configuration:
     - Install nginx:
         - `sudo apt install nginx`
-    - `sudo nano /etc/nginx/sites-available/myproject`
+    - `sudo nano /etc/nginx/sites-available/Battery-Prediction`
     - Type the following into the file:
          ```nginx
         server {
-            listen 80;
-            server_name yourip;
-
-            access_log /var/log/nginx/website-name.log;
-
-            location /static/ {
-                alias /opt/myproject/myproject/path-to-static-files/;
-            }
-
-            location / {
-                proxy_pass http://127.0.0.1:8000;
-                proxy_set_header X-Forwarded-Host $server_name;
-                proxy_set_header X-Real-IP $remote_addr;
-                add_header P3P 'CP="ALLDSP COR PSAa PSDa OURNOR ONL UNI COM NAV"';
-            }
+           listen 80;
+           server_name 103.189.235.223;
+        
+           access_log /var/log/nginx/Battery-Prediction.log;
+        
+           location /static/ {
+               alias /opt/myproject/Battery_ML/battery_prediction/static/;
+           }
+        
+           location / {
+               proxy_pass http://127.0.0.1:8002;
+               proxy_set_header X-Forwarded-Host $server_name;
+               proxy_set_header X-Real-IP $remote_addr;
+               add_header P3P 'CP="ALLDSP COR PSAa PSDa OURNOR ONL UNI COM NAV"';
+           }
         }
+
          ```
     - Now we need to set up a symbolic link in the /etc/nginx/sites-enabled directory that points to this configuration file. That is how NGINX knows this site is active. Change directories to /etc/nginx/sites-enabled like this:
         - `cd /etc/nginx/sites-enabled`
@@ -104,7 +105,7 @@
     - Before testing Nginx, the firewall software needs to be adjusted to allow access to the service. Nginx registers itself as a service with ufw upon installation, making it straightforward to allow Nginx access.
 
     - `sudo apt-get install ufw`
-    - `sudo ufw allow 8000`
+    - `sudo ufw allow 8002`
 
     - Restart nginx:
         - `sudo service nginx restart`
@@ -113,10 +114,10 @@
 8. Testing configuration:
 
     - Run gunicorn:
-        - `cd /opt/myproject/myproject/repo-name`
-        - `gunicorn --bind 0.0.0.0:8000 project_name.wsgi`
-    - Visit your project on your server ip address on port 8000:
-        - `yourServerIp:8000`
+        - `cd /opt/myproject/myproject/Battery_ML`
+        - `gunicorn --bind 0.0.0.0:8002 battery_prediction.wsgi`
+    - Visit your project on your server ip address on port 8002:
+        - `yourServerIp:8002`
 
     &nbsp;
 
